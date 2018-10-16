@@ -1,20 +1,36 @@
 require("dotenv").config();
 
+var fs = require("fs");
 var request = require('request');
 var moment = require('moment');
+var Spotify = require('node-spotify-api');
+
+fs.appendFile("log.txt", process.argv.slice(2), function(err) {
+    if (err) {
+        console.log(err);
+    } else {
+        console.log("Added to log");
+    }
+})
+
+var spotify = new Spotify ({
+    id: "da78d8cc207c4bf9a6f586f0aa26dcec",
+    secret: "8e945e6f53f5492c855bf846824ef260"
+});
 
 var command = process.argv[2];
-var query = process.argv[3];
+var userQuery = process.argv.slice(3);
 
 switch (command) {
     case "movie-this":
-        request('http://www.omdbapi.com/?t=' + query + '&apikey=trilogy', function (error, response, body) {
+        request('http://www.omdbapi.com/?t=' + userQuery + '&apikey=trilogy', function (error, response, body) {
             if (error) {
                 console.log('error:', error); // Print the error if one occurred
                 console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
             } else {
-                // console.log('body:', body); // Print the HTML for the Google homepage.
+                // console.log('BODY:', body); // Print the HTML for the Google homepage.
                 var movieData = JSON.parse(body);
+                console.log("\n");
                 console.log("* Title: ", movieData.Title);
                 console.log("* Year of Release: ", movieData.Year);
                 console.log("* IMDB Rating: ", movieData.imdbRating);
@@ -27,7 +43,7 @@ switch (command) {
         });
         break;
     case "concert-this":
-        request("https://rest.bandsintown.com/artists/" + query + "/events?app_id=codingbootcamp", function (error, response, body) {
+        request("https://rest.bandsintown.com/artists/" + userQuery + "/events?app_id=codingbootcamp", function (error, response, body) {
             if (error) {
                 console.log("error:", error);
                 console.log("statsuCode: ", response && response.statusCode);
@@ -43,6 +59,30 @@ switch (command) {
             }
         });
         break;
-    // case "spotify-this-song":
-        
+    case "spotify-this-song":
+        spotify
+        .search({ type: 'track', query: userQuery })
+        .then(function(response) {
+            console.log("\n");
+            console.log("* Artist: ", response.tracks.items[0].artists[0].name);
+            console.log("* Song Name: ", response.tracks.items[0].name);
+            console.log("* Link: ", response.tracks.items[0].external_urls.spotify);
+            console.log("* Album: ", response.tracks.items[0].album.name);
+        })
+        .catch(function(err) {
+        console.log(err);
+        });
+        break;
+    // case "do-what-it-says":
+    //     fs.readFile("random.txt") {
+    //         if (error) {
+    //             return console.log(error);
+    //         }
+
+    //         console.log(data);
+
+    //         var dataArr = data.split(",");
+
+    //         console.log(dataArr);
+    //     }
 }

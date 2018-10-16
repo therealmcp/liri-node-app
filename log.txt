@@ -1,0 +1,1 @@
+C:\Program Files\nodejs\node.exe,C:\Users\McP\Desktop\bootcamp\liri-node-app\liri.js,spotify-this-song,all,the,small,thingsspotify-this-song,all,the,small,things
