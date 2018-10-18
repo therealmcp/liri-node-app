@@ -14,12 +14,12 @@ fs.appendFile("log.txt", process.argv.slice(2), function(err) {
 })
 
 var spotify = new Spotify ({
-    id: "da78d8cc207c4bf9a6f586f0aa26dcec",
-    secret: "8e945e6f53f5492c855bf846824ef260"
+    id: process.env.SPOTIFY_ID,
+    secret: process.env.SPOTIFY_SECRET
 });
 
 var command = process.argv[2];
-var userQuery = process.argv.slice(3);
+var userQuery = process.argv.slice(3); // Fix this for concert-this
 
 switch (command) {
     case "movie-this":
@@ -73,16 +73,15 @@ switch (command) {
         console.log(err);
         });
         break;
-    // case "do-what-it-says":
-    //     fs.readFile("random.txt") {
-    //         if (error) {
-    //             return console.log(error);
-    //         }
+    case "do-what-it-says":
+        fs.readFile("random.txt", "utf8", function(error, data) {
+            if (error) {
+                return console.log(error);
+            }
 
-    //         console.log(data);
+            var dataArr = data.split(",");
 
-    //         var dataArr = data.split(",");
+            console.log(dataArr);
 
-    //         console.log(dataArr);
-    //     }
+        })
 }
